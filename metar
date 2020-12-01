@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ "$#" == 1 ]
+then
+	SEARCH_ARG1=$( date -d yesterday  +"%d-%m-%Y")
+	SEARCH_ARG2="$1"
+elif [ "$#" == 2 ]
+then
+	SEARCH_ARG1=$(echo $1)
+	SEARCH_ARG2=$(echo $2)
+else
+	echo "nesprávne zadanané argumenty"
+	exit 1
+fi
+DAY=$(echo "$SEARCH_ARG1" | cut -f 1 -d "-")
+MONTH=$(echo "$SEARCH_ARG1" | cut -f 2 -d "-")
+YEAR=$(echo "$SEARCH_ARG1" | cut -f 3 -d "-")
+SEARCH_ARG1=$(date -d $(echo $MONTH/$DAY/$YEAR) +'%s')
+SEARCH_ARG3=$(echo "$SEARCH_ARG1 + 24*60*60" | bc)
+URL='https://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=csv&stationString='$SEARCH_ARG2'&startTime='$SEARCH_ARG1'&endTime='$SEARCH_ARG3''
+curl -s "$URL" | grep $SEARCH_ARG2

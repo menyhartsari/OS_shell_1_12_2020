@@ -1,0 +1,19 @@
+#!/bin/bash
+
+cat <<THE_END
+set terminal wxt
+set xdata time
+set timefmt "%H-%M"
+set xtics format "%H:%M"
+plot '-' using 1:2 with boxes
+THE_END
+
+while read LINE
+do
+	TEP=$(echo "$LINE" | cut -f 6 -d,)
+	TEP=$(echo "$TEP" | cut -f 1 -d.)
+	CAS=$(echo "$LINE" | cut -f 3 -d,)
+	CAS=$(date -d $CAS +'%R' | tr ":" "-")
+	echo "$CAS" "$TEP"
+done
+echo "e"
